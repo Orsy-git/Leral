@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="page-header">
+        <a href="/dashboard?meter_id={{ meter_id }}" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+            Retour au tableau de bord
+        </a>
+        <h1>Paramètres</h1>
+        <p>Personnalisez votre expérience Leral</p>
+    </div>
+
+    <div class="settings-grid">
+        <div class="settings-card">
+            <h3><i class="fas fa-palette"></i> Apparence</h3>
+            
+            <div class="setting-item">
+                <label>Thème</label>
+                <div class="theme-selector">
+                    <button class="theme-btn {{ 'active' if settings.theme == 'light' }}" 
+                            onclick="changeTheme('light')">
+                        <i class="fas fa-sun"></i>
+                        Mode Clair
+                    </button>
+                    <button class="theme-btn {{ 'active' if settings.theme == 'dark' }}" 
+                            onclick="changeTheme('dark')">
+                        <i class="fas fa-moon"></i>
+                        Mode Sombre
+                    </button>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <label>Langue</label>
+                <select class="setting-select" id="languageSelect" onchange="updateSetting('language', this.value)">
+                    <option value="fr" {{ 'selected' if settings.language == 'fr' }}>Français</option>
+                    <option value="en" {{ 'selected' if settings.language == 'en' }}>English</option>
+                    <option value="wo" {{ 'selected' if settings.language == 'wo' }}>Wolof</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <h3><i class="fas fa-bell"></i> Notifications</h3>
+            
+            <div class="setting-item">
+                <div class="toggle-group">
+                    <label>Alertes de consommation</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="notificationsToggle" 
+                               {{ 'checked' if settings.notifications }} 
+                               onchange="updateSetting('notifications', this.checked)">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <small>Recevoir des alertes quand la consommation est élevée</small>
+            </div>
+
+            <div class="setting-item">
+                <div class="toggle-group">
+                    <label>Notifications de solde</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" {{ 'checked' if true }}>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <small>Alertes quand le solde est faible</small>
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <h3><i class="fas fa-wallet"></i> Préférences de Paiement</h3>
+            
+            <div class="setting-item">
+                <label>Devise par défaut</label>
+                <select class="setting-select" id="currencySelect" onchange="updateSetting('currency', this.value)">
+                    <option value="XOF" {{ 'selected' if settings.currency == 'XOF' }}>Franc CFA (XOF)</option>
+                    <option value="EUR" {{ 'selected' if settings.currency == 'EUR' }}>Euro (EUR)</option>
+                    <option value="USD" {{ 'selected' if settings.currency == 'USD' }}>Dollar US (USD)</option>
+                </select>
+            </div>
+
+            <div class="setting-item">
+                <label>Méthode de paiement favorite</label>
+                <select class="setting-select">
+                    <option>Orange Money</option>
+                    <option>Free Money</option>
+                    <option>Wave</option>
+                    <option>Carte Bancaire</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <h3><i class="fas fa-shield-alt"></i> Sécurité</h3>
+            
+            <div class="setting-item">
+                <label>Changer le mot de passe</label>
+                <input type="password" class="setting-input" placeholder="Nouveau mot de passe">
+            </div>
+
+            <div class="setting-item">
+                <label>Confirmation</label>
+                <input type="password" class="setting-input" placeholder="Confirmer le mot de passe">
+            </div>
+
+            <button class="btn-primary" style="margin-top: 1rem;">
+                <i class="fas fa-key"></i> Mettre à jour le mot de passe
+            </button>
+        </div>
+    </div>
+
+    <div class="settings-actions">
+        <button class="btn-primary" onclick="saveAllSettings()">
+            <i class="fas fa-save"></i> Sauvegarder les paramètres
+        </button>
+        <button class="btn-outline" onclick="resetSettings()">
+            <i class="fas fa-undo"></i> Réinitialiser
+        </button>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+{% endblock %}

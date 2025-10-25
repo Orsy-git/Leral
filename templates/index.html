@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1>Leral<span class="accent">.</span></h1>
+            <h2>Votre compagnon énergétique intelligent</h2>
+            <p class="hero-description">
+                Surveillez votre consommation d'électricité en temps réel, 
+                gérez vos paiements et optimisez vos dépenses énergétiques 
+                depuis votre smartphone.
+            </p>
+            
+            <div class="search-container">
+                <form action="/dashboard" method="get" class="search-form">
+                    <div class="input-group">
+                        <i class="fas fa-bolt"></i>
+                        <input type="text" 
+                               name="meter_id" 
+                               placeholder="Entrez votre numéro de compteur (ex: SENELEC_000001)" 
+                               required
+                               class="search-input">
+                        <button type="submit" class="search-btn">
+                            <i class="fas fa-chart-line"></i>
+                            Voir ma consommation
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Suivi en Temps Réel</h3>
+                    <p>Visualisez votre consommation heure par heure</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <h3>Gestion des Paiements</h3>
+                    <p>Contrôlez votre solde et vos dépenses</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-bell"></i>
+                    <h3>Alertes Intelligentes</h3>
+                    <p>Soyez informé des coupures et conseils</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

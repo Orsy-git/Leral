@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="payment-status">
+        <div class="status-card {{ 'success' if success else 'error' }}">
+            <div class="status-icon">
+                {% if success %}
+                <i class="fas fa-check-circle"></i>
+                {% else %}
+                <i class="fas fa-times-circle"></i>
+                {% endif %}
+            </div>
+            
+            <h1>{{ "Paiement Réussi!" if success else "Paiement Échoué" }}</h1>
+            
+            <p class="status-message">{{ message }}</p>
+            
+            {% if success and new_balance %}
+            <div class="payment-details">
+                <div class="detail-item">
+                    <span>Compteur:</span>
+                    <strong>{{ meter_id }}</strong>
+                </div>
+                <div class="detail-item">
+                    <span>Nouveau solde:</span>
+                    <strong>{{ "%.2f"|format(new_balance) }} FCFA</strong>
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="status-actions">
+                <a href="/dashboard?meter_id={{ meter_id }}" class="btn-primary">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Retour au tableau de bord
+                </a>
+                <a href="/payment" class="btn-outline">
+                    <i class="fas fa-credit-card"></i>
+                    Nouvelle recharge
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.payment-status {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.status-card {
+    background: var(--surface-color);
+    padding: 3rem 2rem;
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+    border: 2px solid transparent;
+}
+
+.status-card.success {
+    border-color: var(--success-color);
+}
+
+.status-card.error {
+    border-color: var(--error-color);
+}
+
+.status-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+}
+
+.status-card.success .status-icon {
+    color: var(--success-color);
+}
+
+.status-card.error .status-icon {
+    color: var(--error-color);
+}
+
+.status-card h1 {
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.status-message {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.payment-details {
+    background: var(--background-color);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    text-align: left;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.detail-item:last-child {
+    margin-bottom: 0;
+}
+
+.status-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+    .status-actions {
+        flex-direction: column;
+    }
+    
+    .status-actions .btn-primary,
+    .status-actions .btn-outline {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}

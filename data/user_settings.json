@@ -1,0 +1,12 @@
+{
+  "SENELEC_000001": {
+    "currency": "EUR",
+    "notifications": true
+  },
+  "SENELEC_000025": {
+    "currency": "XOF",
+    "theme": "light",
+    "language": "en",
+    "notifications": true
+  }
+}

@@ -1,0 +1,37 @@
+# Fichiers d'environnement
+.env
+.env.local
+
+# Environnements virtuels Python
+venv/
+env/
+.venv/
+
+# Cache Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Base de données
+*.db
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Données générées
+data/consumption_data.json
+data/user_settings.json
+exports/

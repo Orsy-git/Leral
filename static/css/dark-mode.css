@@ -1,0 +1,50 @@
+/* Mode sombre */
+body.dark-mode {
+    --background-color: #0f172a;
+    --surface-color: #1e293b;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --border-color: #334155;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .header {
+    background: rgba(30, 41, 59, 0.95);
+    border-bottom-color: var(--border-color);
+}
+
+body.dark-mode .stat-card,
+body.dark-mode .chart-card,
+body.dark-mode .dashboard-header,
+body.dark-mode .actions-section,
+body.dark-mode .history-card,
+body.dark-mode .settings-card,
+body.dark-mode .payment-card,
+body.dark-mode .summary-card {
+    background: var(--surface-color);
+    color: var(--text-primary);
+}
+
+body.dark-mode .input-group,
+body.dark-mode .search-input,
+body.dark-mode .setting-input,
+body.dark-mode .setting-select,
+body.dark-mode .amount-input {
+    background: var(--surface-color);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+body.dark-mode .data-table {
+    background: var(--surface-color);
+    color: var(--text-primary);
+}
+
+body.dark-mode .data-table th {
+    background: #334155;
+    color: var(--text-primary);
+}
+
+body.dark-mode .data-table td {
+    border-color: var(--border-color);
+}

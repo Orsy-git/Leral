@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    {% if error %}
+    <div class="error-message">
+        <i class="fas fa-exclamation-triangle"></i>
+        {{ error }}
+        <a href="/" class="back-link">Retour à l'accueil</a>
+    </div>
+    {% else %}
+    
+    <div class="dashboard-header">
+        <div class="meter-info">
+            <h1>Tableau de Bord</h1>
+            <div class="meter-details">
+                <span class="meter-id">{{ meter_id }}</span>
+                <span class="customer-name">{{ meter_data.customer_name }}</span>
+                <span class="meter-type {{ meter_data.meter_type|lower }}">{{ meter_data.meter_type }}</span>
+            </div>
+        </div>
+        <div class="last-update">
+            Dernière mise à jour: {{ meter_data.last_update }}
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card balance">
+            <div class="stat-icon">
+                <i class="fas fa-wallet"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Solde Actuel</h3>
+                <div class="stat-value">{{ "%.2f"|format(meter_data.current_balance) }} FCFA</div>
+            </div>
+        </div>
+
+        <div class="stat-card consumption">
+            <div class="stat-icon">
+                <i class="fas fa-bolt"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Consommation du Jour</h3>
+                <div class="stat-value">{{ "%.2f"|format(meter_data.total_consumption) }} kWh</div>
+            </div>
+        </div>
+
+        <div class="stat-card status">
+            <div class="stat-icon">
+                <i class="fas fa-plug"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Statut</h3>
+                <div class="stat-value {{ 'active' if meter_data.status == 'Actif' else 'inactive' }}">
+                    {{ meter_data.status }}
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card power">
+            <div class="stat-icon">
+                <i class="fas fa-tachometer-alt"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Puissance Souscrite</h3>
+                <div class="stat-value">{{ meter_data.contract_power }} kVA</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nouvelle Section : Prédiction de Durée du Crédit -->
+    <div class="prediction-section">
+        <div class="section-header">
+            <h2><i class="fas fa-calendar-alt"></i> Prédiction de Durée du Crédit</h2>
+            <p>Estimation basée sur votre consommation récente</p>
+        </div>
+        
+        <div class="prediction-grid">
+            <!-- Carte principale de prédiction -->
+            <div class="prediction-card main-prediction">
+                <div class="prediction-header">
+                    <h3>Votre crédit actuel vous permettra de tenir</h3>
+                    <div class="days-count {{ metrics.alert_level }}">
+                        <span class="number">{{ metrics.days_remaining }}</span>
+                        <span class="label">jours</span>
+                    </div>
+                </div>
+                
+                <div class="prediction-details">
+                    <div class="detail-item">
+                        <i class="fas fa-wallet"></i>
+                        <div class="detail-info">
+                            <span class="label">Solde actuel</span>
+                            <span class="value">{{ "%.0f"|format(metrics.current_balance) }} FCFA</span>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <i class="fas fa-bolt"></i>
+                        <div class="detail-info">
+                            <span class="label">Consommation moyenne/jour</span>
+                            <span class="value">{{ metrics.avg_daily_consumption }} kWh</span>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <div class="detail-info">
+                            <span class="label">Coût moyen/jour</span>
+                            <span class="value">{{ "%.0f"|format(metrics.avg_daily_cost) }} FCFA</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alert-banner {{ metrics.alert_level }}">
+                    <i class="fas fa-{{ 'exclamation-triangle' if metrics.alert_level in ['warning', 'critical'] else 'check-circle' }}"></i>
+                    <span>{{ metrics.alert_message }}</span>
+                    {% if metrics.alert_level in ['warning', 'critical'] %}
+                    <a href="/payment" class="alert-action">Recharger maintenant</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Simulation de recharge -->
+            <div class="prediction-card simulation-card">
+                <h3><i class="fas fa-calculator"></i> Simuler une recharge</h3>
+                
+                <div class="simulation-controls">
+                    <label>Montant de recharge (FCFA)</label>
+                    <div class="simulation-input">
+                        <input type="number" id="rechargeAmount" value="5000" min="1000" max="50000" step="1000">
+                        <button onclick="simulateRecharge()" class="simulate-btn">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="quick-amounts">
+                        <button class="quick-amount" onclick="setAmount(5000)">5,000</button>
+                        <button class="quick-amount" onclick="setAmount(10000)">10,000</button>
+                        <button class="quick-amount" onclick="setAmount(20000)">20,000</button>
+                    </div>
+                </div>
+                
+                <div id="simulationResult" class="simulation-result">
+                    <div class="result-item">
+                        <span>Nouvelle durée estimée:</span>
+                        <strong id="simulatedDays">-- jours</strong>
+                    </div>
+                    <div class="result-item">
+                        <span>Total avec recharge:</span>
+                        <strong id="totalBalance">-- FCFA</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Graphique de projection -->
+            <div class="prediction-card chart-card">
+                <h3><i class="fas fa-chart-line"></i> Projection sur 30 jours</h3>
+                <div id="projectionChart" class="projection-chart"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="charts-grid">
+        <div class="chart-card full-width">
+            <div class="chart-header">
+                <h3>Consommation Horaire (24h)</h3>
+                <div class="chart-actions">
+                    <button class="btn-outline" onclick="updateChart('hourly')">
+                        <i class="fas fa-sync-alt"></i> Actualiser
+                    </button>
+                </div>
+            </div>
+            <div id="hourlyChart" class="chart-container"></div>
+        </div>
+
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3>Consommation Quotidienne</h3>
+            </div>
+            <div id="dailyChart" class="chart-container"></div>
+        </div>
+
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3>Coûts Mensuels</h3>
+            </div>
+            <div id="monthlyChart" class="chart-container"></div>
+        </div>
+    </div>
+
+    <div class="actions-section">
+        <h3>Actions Rapides</h3>
+        <div class="actions-grid">
+            <a href="/payment" class="action-btn primary">
+                <i class="fas fa-credit-card"></i>
+                Recharger le Compteur
+            </a>
+            <a href="/history" class="action-btn secondary">
+                <i class="fas fa-history"></i>
+                Historique Complet
+            </a>
+            <button class="action-btn secondary" onclick="exportToExcel()">
+                <i class="fas fa-download"></i>
+                Télécharger Rapport
+            </button>
+            <a href="/settings" class="action-btn secondary">
+                <i class="fas fa-cog"></i>
+                Paramètres
+            </a>
+        </div>
+    </div>
+
+    <!-- Données pour les graphiques -->
+    <script>
+        const hourlyData = {{ meter_data.hourly_data | tojson }};
+        const dailyData = {{ meter_data.daily_data | tojson }};
+        const monthlyData = {{ meter_data.monthly_data | tojson }};
+        const meterId = "{{ meter_id }}";
+        const metrics = {{ metrics | tojson }};
+    </script>
+
+    {% endif %}
+</div>
+
+<script>
+function exportToExcel() {
+    window.location.href = '/api/export_excel';
+}
+</script>
+{% endblock %}

@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="page-header">
+        <a href="/dashboard?meter_id={{ meter_id }}" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+            Retour au tableau de bord
+        </a>
+        <h1>Recharger le Compteur</h1>
+        <p>Rechargez votre solde en toute sécurité</p>
+    </div>
+
+    <div class="payment-grid">
+        <div class="payment-card">
+            <h3><i class="fas fa-bolt"></i> Recharge Rapide</h3>
+            
+            <div class="quick-amounts">
+                <div class="amount-grid">
+                    <button class="amount-btn" onclick="selectAmount(1000)">1,000 FCFA</button>
+                    <button class="amount-btn" onclick="selectAmount(2000)">2,000 FCFA</button>
+                    <button class="amount-btn" onclick="selectAmount(5000)">5,000 FCFA</button>
+                    <button class="amount-btn" onclick="selectAmount(10000)">10,000 FCFA</button>
+                </div>
+            </div>
+
+            <div class="custom-amount">
+                <label>Montant personnalisé</label>
+                <div class="input-group">
+                    <input type="number" id="customAmount" placeholder="Entrez le montant" class="amount-input">
+                    <span class="currency">FCFA</span>
+                </div>
+            </div>
+
+            <div class="payment-methods">
+                <h4>Méthode de paiement</h4>
+                <div class="method-grid">
+                    <div class="method-card" onclick="selectMethod('orange')">
+                        <i class="fas fa-mobile-alt orange"></i>
+                        <span>Orange Money</span>
+                    </div>
+                    <div class="method-card" onclick="selectMethod('free')">
+                        <i class="fas fa-mobile-alt free"></i>
+                        <span>Free Money</span>
+                    </div>
+                    <div class="method-card" onclick="selectMethod('wave')">
+                        <i class="fas fa-wave-square wave"></i>
+                        <span>Wave</span>
+                    </div>
+                    <div class="method-card" onclick="selectMethod('card')">
+                        <i class="fas fa-credit-card card"></i>
+                        <span>Carte Bancaire</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-primary payment-btn" onclick="initiatePayment()">
+                <i class="fas fa-lock"></i>
+                Payer maintenant
+            </button>
+        </div>
+
+        <div class="summary-card">
+            <h3><i class="fas fa-receipt"></i> Récapitulatif</h3>
+            
+            <div class="summary-item">
+                <span>Compteur:</span>
+                <strong>{{ meter_id }}</strong>
+            </div>
+            <div class="summary-item">
+                <span>Solde actuel:</span>
+                <strong>{{ "%.2f"|format(meter_data.current_balance) }} FCFA</strong>
+            </div>
+            <div class="summary-item">
+                <span>Montant à recharger:</span>
+                <strong id="selectedAmount">0 FCFA</strong>
+            </div>
+            <div class="summary-item">
+                <span>Frais de service:</span>
+                <strong id="serviceFees">0 FCFA</strong>
+            </div>
+            <hr>
+            <div class="summary-total">
+                <span>Total à payer:</span>
+                <strong id="totalAmount">0 FCFA</strong>
+            </div>
+
+            <div class="security-notice">
+                <i class="fas fa-shield-alt"></i>
+                <div>
+                    <strong>Paiement sécurisé</strong>
+                    <small>Vos données sont cryptées et protégées</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmation -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Confirmation de paiement</h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="confirmation-details">
+                    <p>Vous êtes sur le point de recharger votre compteur :</p>
+                    <div class="detail-item">
+                        <strong>Compteur:</strong> {{ meter_id }}
+                    </div>
+                    <div class="detail-item">
+                        <strong>Montant:</strong> <span id="confirmAmount"></span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Méthode:</strong> <span id="confirmMethod"></span>
+                    </div>
+                </div>
+                <button class="btn-primary confirm-btn" onclick="processPayment()">
+                    <i class="fas fa-check"></i>
+                    Confirmer le paiement
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/payments.js') }}"></script>
+{% endblock %}
