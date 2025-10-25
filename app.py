@@ -715,28 +715,14 @@ def api_regenerate_data():
         return jsonify({"error": "Erreur lors de la régénération"}), 500
 
 if __name__ == '__main__':
-    print("🚀 Démarrage de Leral - Gestion Intelligente de l'Énergie")
-    print("=" * 50)
-    print("💳 Intégration PayTech activée")
-    print("🔑 Configuration PayTech:")
-    print(f"   - API Key: {PayTechConfig.API_KEY[:10]}...")
-    print(f"   - Base URL: {PayTechConfig.BASE_URL}")
-    print("=" * 50)
-    
     # Chargement/regénération automatique des données
     consumption_data = load_consumption_data()
     
     if consumption_data:
         print(f"✅ {len(consumption_data)} compteurs prêts")
-        print("🌐 Application accessible sur: http://localhost:5000")
-        print("Compteurs de test:")
-        print("   - SENELEC_000001")
-        print("   - SENELEC_000042")
-        print("   - SENELEC_000099")
-       
-    else:
-        print("❌ Impossible de charger les données")
+        print("🌐 Application accessible")
+        print("🎯 Compteurs de test: SENELEC_000001, SENELEC_000042, SENELEC_000099")
     
-    print("=" * 50)
-    
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    # En production sur Render
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
